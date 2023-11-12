@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import { remult } from "remult";
 import { Task } from "./shared/Task";
+import { TasksController} from "./shared/TasksController"
 
 const taskRepo = remult.repo(Task);
 const tasks = ref<Task[]>([]);
@@ -34,6 +35,10 @@ async function deleteTask(task: Task) {
   }
 }
 
+async function setAllCompleted(completed: boolean) {
+  await TasksController.setAllCompleted(completed)
+}
+
 onMounted(() =>
   onUnmounted(
     taskRepo
@@ -55,6 +60,10 @@ onMounted(() =>
         <input v-model="newTaskTitle" placeholder="What needs to be done?" />
         <button>Add</button>
       </form>
+      <div>
+        <button @click="setAllCompleted(true)">Set All as Completed</button>
+        <button @click="setAllCompleted(false)">Set All as Uncompleted</button>
+      </div>
       <div v-for="task in tasks" :key="task.id">
         <input type="checkbox" v-model="task.completed" @change="saveTask(task)" />
         <input v-model="task.title" />
